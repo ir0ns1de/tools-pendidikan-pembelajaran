@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Aplikasi Cetak Struk 58mm Simple — Simple POS Print</title>
+  <meta name="description" content="Aplikasi cetak printer termal untuk struk, label, antrian, barcode, dan nota. Mendukung berbagai ukuran kertas, mudah digunakan, cepat, dan kompatibel dengan berbagai jenis thermal printer.">
+    <meta name="keywords" content="aplikasi printer termal, thermal printer, cetak struk, aplikasi kasir, cetak barcode, cetak label, struk thermal, POS printer, cetak nota">
+
+    <!-- Author & Copyright -->
+    <meta name="author" content="Bikinkarya Creative Labs">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="Indonesia">
+
+    <!-- ===================== CANONICAL ===================== -->
+    <link rel="canonical" href="https://tools.tep.or.id/struk">
+
+    <!-- ===================== OPEN GRAPH (FACEBOOK / WHATSAPP) ===================== -->
+    <meta property="og:title" content="Aplikasi Cetak Printer Termal – Cepat & Akurat">
+    <meta property="og:description" content="Solusi cetak struk, label, barcode, dan nota menggunakan printer termal. Praktis, ringan, dan kompatibel dengan berbagai perangkat.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://tools.tep.or.id/struk">
+    <meta property="og:image" content="https://cdn.lynkid.my.id/profile/21-08-2025/1755733261192_8171464.webp">
+    <meta property="og:locale" content="id_ID">
+
+    <!-- ===================== TWITTER CARD ===================== -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Aplikasi Cetak Printer Termal – Cepat & Akurat">
+    <meta name="twitter:description" content="Aplikasi cetak struk dan label yang mudah digunakan dan kompatibel dengan berbagai TSPL/ZPL/ESC-POS.">
+    <meta name="twitter:image" content="https://cdn.lynkid.my.id/profile/21-08-2025/1755733261192_8171464.webp">
+
+    <!-- ===================== FAVICON ===================== -->
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+    <!-- ===================== SCHEMA.ORG JSON-LD ===================== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Aplikasi Cetak Printer Termal",
+      "operatingSystem": "Web, Windows, Android",
+      "applicationCategory": "BusinessApplication",
+      "description": "Aplikasi cetak printer termal untuk struk, label, barcode dan nota dengan kecepatan tinggi serta dukungan printer ESC/POS, TSPL, dan ZPL.",
+      "url": "https://tools.tep.or.id/struk",
+      "image": "https://cdn.lynkid.my.id/profile/21-08-2025/1755733261192_8171464.webp",
+      "publisher": {
+        "@type": "Organization",
+        "name": "Bikinkarya Creative Labs"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "IDR"
+      }
+    }
+    </script>
+  <style>
+    :root{
+      --paper-width: 58mm; 
+      --font-size: 12px; 
+      --line-height: 1.15;
+    }
+    body{ font-family: system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, monospace; padding:16px; background:#f4f4f6; }
+
+    .app{ max-width:780px; margin:0 auto; }
+    h1{ font-size:16px; margin:0 0 12px }
+    .controls{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px }
+    textarea#inputText{ width:100%; min-height:160px; padding:8px; box-sizing:border-box; font-family:monospace; font-size:13px }
+
+    .preview-wrap{ background:#fff; padding:12px; border-radius:8px; box-shadow:0 1px 4px rgba(0,0,0,.06); display:inline-block }
+    .receipt{
+      width: var(--paper-width);
+      min-height:20mm;
+      padding:6px 6px 10px 6px;
+      box-sizing:border-box;
+      font-family:monospace;
+      font-size: var(--font-size);
+      line-height: var(--line-height);
+      white-space: pre-wrap;
+      word-break: break-word;
+      color:#000;
+      background: #fff;
+    }
+
+    .small{ font-size:11px }
+    .center{ text-align:center }
+    .right{ text-align:right }
+    .bold{ font-weight:700 }
+    
+    @media print{
+      body *{ visibility: hidden }
+      .receipt, .receipt *{ visibility: visible }
+      .receipt{ position: absolute; left: 0; top: 0; }
+      @page { size: 58mm auto; margin: 0; }
+      @page:first { margin-top: 0 }
+    }
+    
+    button, select { padding:8px 10px; border-radius:6px; border:1px solid #ddd; background:#fff; cursor:pointer }
+    button:active{ transform:translateY(1px) }
+    .muted{ color:#666; font-size:13px }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <h1>Cetak Struk 58mm — Tempel teks & cetak</h1>
+
+    <div class="controls">
+      <label class="muted">Ukuran font:</label>
+      <select id="fontSize">
+        <option value="20px">20</option>
+        <option value="18px">18</option>
+        <option value="16px">16</option>
+        <option value="14px">14</option>
+        <option value="13px">13</option>
+        <option value="12px" selected>12</option>
+        <option value="11px">11</option>
+        <option value="10px">10</option>
+      </select>
+
+      <label class="muted">Rata:</label>
+      <select id="align">
+        <option value="left">Kiri</option>
+        <option value="center">Tengah</option>
+        <option value="right">Kanan</option>
+      </select>
+
+      <button id="renderBtn">Tampilkan / Preview</button>
+      <button id="printBtn">Cetak</button>
+      <button id="clearBtn">Bersihkan</button>
+    </div>
+
+    <textarea id="inputText" placeholder="Tempel teks struk di sini (boleh pakai \n untuk baris baru).\nContoh:\nNama Item x2    Rp 20.000\nSubtotal       Rp 20.000\nTerima kasih!"></textarea>
+
+    <div style="margin-top:12px">
+      <div class="preview-wrap">
+        <div id="receipt" class="receipt"></div>
+      </div>
+    </div>
+
+    <p class="muted" style="margin-top:10px">Tips: Pastikan saat mencetak dari browser Anda memilih <strong>printer thermal</strong> dan atur ukuran kertas/custom paper ke <strong>58mm</strong> atau gunakan driver printer yang otomatis menyesuaikan. Jika printer punya opsi margin, set ke <strong>0</strong>.</p>
+    <p class="muted" style="margin-top:10px">by <a href="https://bikinkarya.com">Bikinkarya Creative Labs</a></p>
+  </div>
+
+  <script>
+    const input = document.getElementById('inputText')
+    const receipt = document.getElementById('receipt')
+    const fontSize = document.getElementById('fontSize')
+    const align = document.getElementById('align')
+    const renderBtn = document.getElementById('renderBtn')
+    const printBtn = document.getElementById('printBtn')
+    const clearBtn = document.getElementById('clearBtn')
+
+    function renderReceipt(){      
+      document.documentElement.style.setProperty('--font-size', fontSize.value)
+      receipt.classList.remove('center','right')
+      if(align.value === 'center') receipt.classList.add('center')
+      if(align.value === 'right') receipt.classList.add('right')
+
+      const txt = input.value || ''
+
+      const safe = txt.split('\n').map(line=>line.replace(/  +/g, match => match.replace(/ /g,'\u00A0'))).join('\n')
+      receipt.textContent = safe
+
+      receipt.scrollIntoView({behavior:'smooth', block:'center'})
+    }
+
+    renderBtn.addEventListener('click', renderReceipt)
+
+    printBtn.addEventListener('click', ()=>{
+      renderReceipt()
+
+      setTimeout(()=>{
+        window.print()
+      }, 120)
+    })
+
+    clearBtn.addEventListener('click', ()=>{
+      input.value = ''
+      receipt.textContent = ''
+    })
+    
+    input.value = 'TOKO CONTOH\nJl. Contoh No.1\n======================\nROTI TAWAR x1    5.000\nKOPI HITAM x2     10.000\n----------------------\nSubtotal       15.000\nTunai          20.000\nKembali        5.000\n\nTerima kasih!\n'
+    renderReceipt()
+  </script>
+</body>
+</html>
