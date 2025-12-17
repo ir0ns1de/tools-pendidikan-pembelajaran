@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Open Source Dashboard Pemantauan Jurnal Indonesia</title>
+    <!-- Basic SEO -->
+    <meta name="description"
+        content="Open Source Dashboard Pemantauan Jurnal Indonesia untuk monitoring publikasi, SINTA, APC, dan jadwal terbit jurnal berbasis data Google Spreadsheet.">
+    <meta name="keywords"
+        content="dashboard jurnal, jurnal indonesia, sinta jurnal, monitoring jurnal, apc jurnal, open source dashboard, ojs indonesia">
+    <meta name="author" content="Bikinkarya Creative Labs">
+    <meta name="robots" content="index, follow">
+
+    <!-- Viewport (Mobile Friendly) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Open Graph (Facebook, LinkedIn, WhatsApp) -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Open Source Dashboard Pemantauan Jurnal Indonesia">
+    <meta property="og:description"
+        content="Dashboard open source untuk memantau jurnal Indonesia berdasarkan SINTA, APC, dan bulan terbit.">
+    <meta property="og:url" content="https://tools.tep.or.id/pantau-jurnal/id">
+    <meta property="og:site_name" content="Dashboard Jurnal Indonesia">
+    <meta property="og:locale" content="id_ID">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Open Source Dashboard Pemantauan Jurnal Indonesia">
+    <meta name="twitter:description"
+        content="Monitoring jurnal Indonesia berbasis data terbuka, SINTA, dan jadwal terbit.">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://tools.tep.or.id/pantau-jurnal/id">
+
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- DataTables -->
+    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body class="bg-light">
+
+    <div class="container-fluid my-4 px-3 px-md-4">
+
+        <h4 class="fw-bold text-primary mb-4">
+            Open Source Dashboard Pemantauan Jurnal Indonesia
+        </h4>
+        <h5>Craft by Bikinkarya Creative Labs</h5>
+
+        <hr>
+
+        <!-- ================= BAGIAN 1 ================= -->
+        <div class="row g-3 mb-4" id="bagianTerbitan"></div>
+        <hr>
+
+        <!-- ================= BAGIAN 2 ================= -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h2 class="fw-bold text-primary mb-3">Jumlah Jurnal per Bulan</h2>
+                <div class="ratio ratio-16x9">
+                    <canvas id="chartBulanan"></canvas>
+                </div>
+            </div>
+        </div>
+        <hr>
+
+        <!-- ================= BAGIAN 3 ================= -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-3">
+                <div class="card text-bg-primary h-100">
+                    <div class="card-body">
+                        <h2>Total Jurnal</h2>
+                        <h3 id="statTotal">0</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card text-bg-success h-100">
+                    <div class="card-body">
+                        <h2>Jumlah Jurnal per Kategori SINTA</h2>
+                        <div id="statSintaAll" class="small"></div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-md-3">
+                <div class="card text-bg-warning h-100">
+                    <div class="card-body">
+                        <h2>APC Bulan Ini</h2>
+                        <div>
+                            <div id="statMax">-</div>
+                            <div id="statMin">-</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card text-bg-danger h-100">
+                    <div class="card-body">
+                        <h2>Jurnal Bulan Ini per SINTA</h2>
+                        <div id="statSintaNow" class="small"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+
+        <!-- ================= BAGIAN 4 ================= -->
+        <div class="card">
+            <div class="card-body">
+                <h2 class="fw-bold text-primary mb-3">Seluruh Data Jurnal</h2>
+
+                <!-- FILTER -->
+                <div class="row g-2 mb-3">
+                    <div class="col-md-3">
+                        <select id="filterBulan" class="form-select" multiple size="6">
+                        </select>
+                        <small class="text-muted">
+                            Tahan <b>Ctrl</b> (Windows) / <b>Cmd</b> (Mac) untuk pilih lebih dari satu bulan
+                        </small>
+                    </div>
+
+
+                    <div class="col-md-3">
+                        <select id="filterSinta" class="form-select">
+                            <option value="">Filter SINTA</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="number" id="filterApcMin" class="form-control" placeholder="APC Min">
+                    </div>
+                    <div class="col-md-3">
+                        <input type="number" id="filterApcMax" class="form-control" placeholder="APC Max">
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table id="tableAll" class="table table-striped table-bordered">
+                        <thead class="table-primary">
+                            <tr>
+                                <th>No</th>
+                                <th>Nama</th>
+                                <th>SINTA</th>
+                                <th>Link</th>
+                                <th>APC</th>
+                                <th>Subject</th>
+                                <th>Bulan Terbit</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer class="mt-5 bg-white border-top">
+        <div class="container-fluid py-3 px-3 px-md-4">
+            <div class="row align-items-center">
+
+                <div class="col-md-8 text-muted small">
+                    <div>
+                        <strong>Open Source Project</strong> ini dapat diakses melalui
+                        <a href="https://tools.tep.or.id/pantau-jurnal/id" target="_blank" rel="noopener">
+                            https://tools.tep.or.id/pantau-jurnal/id
+                        </a>
+                    </div>
+                    <div>
+                        Lisensi di bawah <strong>Creative Commons</strong> (CC-BY-SA).
+                    </div>
+                </div>
+
+                <div class="col-md-4 text-md-end text-muted small mt-2 mt-md-0">
+                    <div>
+                        Kontribusi & kolaborasi:
+                    </div>
+                    <div>
+                        <a href="mailto:fitrah.izul.falaq@unj.ac.id">
+                            fitrah.izul.falaq@unj.ac.id
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- JS -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+    <script>
+        const URL = "https://docs.google.com/spreadsheets/d/1CW86caoK90fXyxvLmSeZH9XQ_fL1_eI-kvttMxE4hRY/gviz/tq?tqx=out:json&sheet=INDONESIA";
+        const bulanNama = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+        const now = new Date().getMonth();
+
+        let jurnal = [], table;
+
+        /* ================= UTIL ================= */
+        function getNamaJurnal(url) {
+            try {
+                if (!url || typeof url !== "string") return "JURNAL";
+
+                // Normalisasi
+                url = url.trim();
+
+                // 1. Jika mengandung index.php/
+                if (url.includes("index.php/")) {
+                    let slug = url.split("index.php/")[1]
+                        .split("/")[0]
+                        .replace(/[-_]/g, " ")
+                        .trim();
+
+                    if (slug.length > 0) {
+                        return slug
+                            .toLowerCase()
+                            .replace(/\b\w/g, c => c.toUpperCase());
+                    }
+                }
+
+                // 2. Jika tidak ada index.php, ambil slug setelah domain
+                const u = new URL(url);
+                const path = u.pathname
+                    .split("/")
+                    .filter(p => p.length > 0);
+
+                if (path.length === 1) {
+                    let slug = path[0]
+                        .replace(/[-_]/g, " ")
+                        .trim();
+
+                    if (slug.length > 0) {
+                        return slug
+                            .toLowerCase()
+                            .replace(/\b\w/g, c => c.toUpperCase());
+                    }
+                }
+
+                // 3. Fallback
+                return "JURNAL";
+
+            } catch (e) {
+                return "JURNAL";
+            }
+        }
+
+
+
+        /* ================= FETCH ================= */
+        fetch(URL).then(r => r.text()).then(t => {
+            const json = JSON.parse(t.substring(t.indexOf("{"), t.lastIndexOf("}") + 1));
+
+            json.table.rows.slice(1).forEach(r => {
+                if (!r.c || !r.c[2]?.v) return;
+
+                let bulan = [];
+                for (let i = 0; i < 12; i++) bulan.push(r.c[5 + i]?.v === 1 ? 1 : 0);
+
+                jurnal.push({
+                    nama: getNamaJurnal(r.c[2].v),
+                    sinta: r.c[1]?.v || "-",
+                    link: r.c[2].v,
+                    fee: r.c[3]?.v || 0,
+                    subject: r.c[17]?.v || "-",
+                    bulan
+                });
+            });
+
+            renderBagian1();
+            renderGrafik();
+            renderStatistik();
+            renderTable();
+        });
+
+        /* ================= BAGIAN 1 ================= */
+        function renderBagian1() {
+            const wrap = document.getElementById("bagianTerbitan");
+            wrap.innerHTML = "";
+
+            for (let o = 0; o < 3; o++) {
+                const m = (now + o) % 12;
+
+                wrap.innerHTML += `
+    <div class="col-xl-4 col-md-6">
+      <div class="card h-100 shadow-sm">
+        <div class="card-header bg-success text-white">
+          Terbit ${o === 0 ? "Bulan Ini" : o + " Bulan Selanjutnya"} (${bulanNama[m]})
+        </div>
+        <div class="card-body overflow-auto" style="max-height:360px">
+          ${jurnal.filter(j => j.bulan[m] === 1).map(j => `
+            <div class="border-bottom pb-2 mb-2 small">
+              <h4>${j.nama}</h4><br>
+              <b>SINTA ${j.sinta}</b><br>
+              ${j.subject}<br><br>
+              <span class="text-success fw-semibold">
+                APC: Rp${j.fee.toLocaleString("id-ID")}
+              </span>
+              <a href="${j.link}" target="_blank" class="btn btn-primary btn-sm float-end">Link Jurnal</a>
+              <br>
+            </div>`).join("")
+                    }
+        </div>
+      </div>
+    </div>`;
+            }
+        }
+
+        /* ================= BAGIAN 2 ================= */
+        function renderGrafik() {
+            let data = Array(12).fill(0);
+            jurnal.forEach(j => j.bulan.forEach((v, i) => { if (v === 1) data[i]++; }));
+
+            new Chart(document.getElementById("chartBulanan"), {
+                type: "bar",
+                data: {
+                    labels: bulanNama,
+                    datasets: [{ data, backgroundColor: "#0d6efd" }]
+                },
+                options: { responsive: true, plugins: { legend: { display: false } } }
+            });
+        }
+
+        /* ================= BAGIAN 3 ================= */
+        function renderStatistik() {
+            const total = jurnal.length;
+
+            let sintaAll = {};   // SELURUH jurnal
+            let sintaNow = {};   // hanya bulan ini
+            let feesNow = [];
+
+            jurnal.forEach(j => {
+                // HITUNG SELURUH DATA
+                sintaAll[j.sinta] = (sintaAll[j.sinta] || 0) + 1;
+
+                // HITUNG BULAN INI
+                if (j.bulan[now] === 1) {
+                    sintaNow[j.sinta] = (sintaNow[j.sinta] || 0) + 1;
+                    feesNow.push(j.fee);
+                }
+            });
+
+            /* ---------- TOTAL ---------- */
+            document.getElementById("statTotal").innerText = total;
+
+            /* ---------- SELURUH SINTA ---------- */
+            const sintaAllTarget = document.getElementById("statSintaAll");
+            if (sintaAllTarget) {
+                sintaAllTarget.innerHTML = Object.keys(sintaAll)
+                    .sort()
+                    .map(s => `S${s}: ${sintaAll[s]} jurnal`)
+                    .join("<br>");
+            }
+
+            /* ---------- APC BULAN INI ---------- */
+            document.getElementById("statMax").innerText =
+                feesNow.length
+                    ? "Tertinggi: Rp" + Math.max(...feesNow).toLocaleString("id-ID")
+                    : "-";
+
+            document.getElementById("statMin").innerText =
+                feesNow.length
+                    ? "Terendah: Rp" + Math.min(...feesNow).toLocaleString("id-ID")
+                    : "-";
+
+            /* ---------- BULAN INI PER SINTA ---------- */
+            const sintaNowTarget = document.getElementById("statSintaNow");
+            if (sintaNowTarget) {
+                sintaNowTarget.innerHTML = Object.keys(sintaNow)
+                    .sort()
+                    .map(s => `S${s}: ${sintaNow[s]} jurnal`)
+                    .join("<br>");
+            }
+        }
+
+
+
+        /* ================= BAGIAN 4 ================= */
+        function renderTable() {
+            // ISI FILTER BULAN
+            bulanNama.forEach(b => {
+                $('#filterBulan').append(`<option value="${b}">${b}</option>`);
+            });
+
+            // ISI FILTER SINTA
+            [...new Set(jurnal.map(j => j.sinta))]
+                .sort()
+                .forEach(s => {
+                    $('#filterSinta').append(`<option value="${s}">SINTA ${s}</option>`);
+                });
+
+            $.fn.dataTable.ext.search.push(function (settings, data) {
+
+                /* ===== AMBIL NILAI FILTER ===== */
+                let bulanDipilih = $('#filterBulan').val();
+                const sintaDipilih = $('#filterSinta').val();
+                const minApc = $('#filterApcMin').val();
+                const maxApc = $('#filterApcMax').val();
+
+                /* ===== NORMALISASI BULAN KE ARRAY ===== */
+                if (bulanDipilih && !Array.isArray(bulanDipilih)) {
+                    bulanDipilih = [bulanDipilih];
+                }
+
+                /* ===== DATA KOLOM (INDEX VALID) ===== */
+                const sinta = data[2];                // Kolom SINTA
+                const apc = parseFloat(data[4]) || 0; // Kolom APC
+                const bulanTerbit = data[6];          // "Jan, Mar, Jul"
+
+                /* ===== FILTER BULAN (MULTI, AMAN) ===== */
+                if (bulanDipilih && bulanDipilih.length > 0) {
+                    let cocok = false;
+                    for (let b of bulanDipilih) {
+                        if (bulanTerbit.includes(b)) {
+                            cocok = true;
+                            break;
+                        }
+                    }
+                    if (!cocok) return false;
+                }
+
+                /* ===== FILTER SINTA ===== */
+                if (sintaDipilih && sinta !== sintaDipilih) {
+                    return false;
+                }
+
+                /* ===== FILTER APC ===== */
+                if (minApc && apc < parseFloat(minApc)) return false;
+                if (maxApc && apc > parseFloat(maxApc)) return false;
+
+                return true;
+            });
+
+
+            $('#filterBulan, #filterSinta, #filterApcMin, #filterApcMax')
+                .on('change keyup', function () {
+                    table.draw();
+                });
+
+            let body = "";
+            jurnal.forEach((j, i) => {
+                let bln = j.bulan.map((v, idx) => v ? bulanNama[idx] : "").filter(Boolean).join(", ");
+                body += `
+    <tr>
+      <td>${i + 1}</td>
+      <td>${j.nama}</td>
+      <td>${j.sinta}</td>
+      <td><a href="${j.link}" target="_blank">Link</a></td>
+      <td>${j.fee}</td>
+      <td>${j.subject}</td>
+      <td>${bln}</td>
+    </tr>`;
+            });
+
+            $("#tableAll tbody").html(body);
+            table = $("#tableAll").DataTable({ pageLength: 10 });
+        }
+    </script>
+
+
+</body>
+
+</html>
