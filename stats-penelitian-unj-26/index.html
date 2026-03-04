@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Dashboard Statistik Penelitian</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #f5f7fb;
+            margin: 40px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        input {
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 15px;
+            font-size: 16px;
+            background: #1976d2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background: #1976d2;
+            color: white;
+        }
+
+        #result {
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Statistik Penelitian Dosen</h1>
+
+        <div class="card">
+
+            <h3>Cek Jumlah Penelitian Berdasarkan NIP</h3>
+
+            <input type="text" id="nip" placeholder="Masukkan NIP">
+            <button onclick="cekNip()">Cari</button>
+
+            <div id="result"></div>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>Top Peneliti Berdasarkan Jumlah Penelitian</h3>
+
+            <table id="tableStat">
+
+                <thead>
+                    <tr>
+                        <th>Ranking</th>
+                        <th>NIP</th>
+                        <th>Jumlah Penelitian</th>
+                    </tr>
+                </thead>
+
+                <tbody></tbody>
+
+            </table>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>Grafik Peneliti Teraktif</h3>
+
+            <canvas id="chartPenelitian"></canvas>
+
+        </div>
+
+
+    </div>
+
+
+    <script>
+
+        let data = [];
+
+        fetch("nip_statistik.json")
+            .then(res => res.json())
+            .then(json => {
+
+                data = json;
+
+                buatTabel();
+                buatChart();
+
+            });
+
+        function cekNip() {
+
+            let nip = document.getElementById("nip").value;
+
+            let found = data.find(d => d.nip === nip);
+
+            if (found) {
+
+                document.getElementById("result").innerHTML =
+                    "NIP <b>" + nip + "</b> memiliki <b>" + found.jumlah_penelitian + "</b> penelitian didanai";
+
+            } else {
+
+                document.getElementById("result").innerHTML =
+                    "NIP tidak ditemukan";
+
+            }
+
+        }
+
+
+        function buatTabel() {
+
+            let tbody = document.querySelector("#tableStat tbody");
+
+            data.slice(0, 20).forEach((d, i) => {
+
+                let row = `
+<tr>
+<td>${i + 1}</td>
+<td>${d.nip}</td>
+<td>${d.jumlah_penelitian}</td>
+</tr>
+`;
+
+                tbody.innerHTML += row;
+
+            });
+
+        }
+
+
+        function buatChart() {
+
+            let top = data.slice(0, 10);
+
+            let labels = top.map(d => d.nip);
+
+            let values = top.map(d => d.jumlah_penelitian);
+
+            new Chart(
+                document.getElementById("chartPenelitian"),
+                {
+                    type: "bar",
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: "Jumlah Penelitian",
+                            data: values
+                        }]
+                    },
+                    options: {
+                        responsive: true
+                    }
+                }
+            );
+
+        }
+
+    </script>
+
+</body>
+
+</html>
