@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Anak Baik di Rumah dan Di Sekolah</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Open Graph (Facebook / LinkedIn / Discord / WhatsApp) -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="CTF Learning Arena">
+  <meta property="og:description" content="Anak Baik di Rumah dan Di Sekolah">
+  <meta property="og:url" content="https://lms.belajar.or.id/ctf-learning">
+  <meta property="og:site_name" content="CTF Learning">
+  <meta property="og:image" content="https://dummyimage.com/1200x630/020617/22c55e&text=Anak Baik di Rumah dan Di Sekolah">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="CTF Learning Arena">
+  <meta name="twitter:description" content="Anak Baik di Rumah dan Di Sekolah">
+  <meta name="twitter:image" content="https://dummyimage.com/1200x630/020617/22c55e&text=Anak Baik di Rumah dan Di Sekolah">
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Comic Sans MS', cursive;
+    }
+
+    /* BACKGROUND LAYER (PALING BELAKANG) */
+    #backgroundLayer {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background: linear-gradient(180deg, #4facfe, #00f2fe);
+      overflow: hidden;
+    }
+
+    /* animasi awan */
+    .cloud {
+      position: absolute;
+      top: 60px;
+      width: 140px;
+      animation: cloudMove 30s linear infinite;
+      opacity: 0.9;
+    }
+
+    @keyframes cloudMove {
+      from { left: -200px; }
+      to { left: 120%; }
+    }
+
+    /* animasi bintang kecil */
+    .bubble {
+      position: absolute;
+      bottom: -50px;
+      width: 15px;
+      height: 15px;
+      background: rgba(255,255,255,0.6);
+      border-radius: 50%;
+      animation: floatUp 8s linear infinite;
+    }
+
+    @keyframes floatUp {
+      from { transform: translateY(0); opacity: 1; }
+      to { transform: translateY(-110vh); opacity: 0; }
+    }
+
+    /* Launcher */
+    #launcher {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      text-align: center;
+      color: #0f172a;
+      z-index: 2;
+      animation: fadeIn 1.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    #launcher h1 {
+      font-size: 2.4rem;
+      color: #ff6b00;
+      text-shadow: 3px 3px #fff;
+      animation: bounceTitle 2s infinite;
+    }
+
+    @keyframes bounceTitle {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+
+    #startBtn {
+      padding: 16px 36px;
+      font-size: 18px;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      background: linear-gradient(135deg, #FFD93D, #FFE66D);
+      color: #333;
+      font-weight: bold;
+      animation: pulse 1s infinite alternate;
+    }
+
+    @keyframes pulse {
+      from { transform: scale(1); }
+      to { transform: scale(1.1); }
+    }
+
+    iframe {
+      display: none;
+      width: 100%;
+      height: 100%;
+      border: none;
+      position: relative;
+      z-index: 1; /* DI ATAS BACKGROUND */
+      background: transparent;
+    }
+
+    /* karakter */
+    .character {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 180px;
+      animation: jump 2s infinite;
+      z-index: 1;
+    }
+
+    @keyframes jump {
+      0%,100% { transform: translate(-50%,0); }
+      50% { transform: translate(-50%,-20px); }
+    }
+
+    /* floating stat */
+    #floatingStat {
+      position: fixed;
+      bottom: 24px;
+      left: 80%;
+      transform: translateX(-50%);
+      background: #0f172a;
+      padding: 10px 18px;
+      border-radius: 30px;
+      box-shadow: 0 10px 25px rgba(0,0,0,.45);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: bold;
+      color: #22c55e;
+      z-index: 9999;
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <!-- BACKGROUND -->
+  <div id="backgroundLayer">
+
+    <!-- awan -->
+    <img src="https://cdn-icons-png.flaticon.com/512/414/414825.png" class="cloud" style="animation-delay:0s">
+    <img src="https://cdn-icons-png.flaticon.com/512/414/414825.png" class="cloud" style="top:120px; animation-delay:10s">
+
+    <!-- bubble animasi -->
+    <div class="bubble" style="left:20%; animation-delay:0s"></div>
+    <div class="bubble" style="left:40%; animation-delay:2s"></div>
+    <div class="bubble" style="left:60%; animation-delay:4s"></div>
+    <div class="bubble" style="left:80%; animation-delay:1s"></div>
+
+  </div>
+
+  <!-- karakter -->
+  <img src="https://cdn-icons-png.flaticon.com/512/1995/1995574.png" class="character">
+
+  <div id="floatingStat">
+    <span>👁</span>
+    <span id="countText">...</span>
+  </div>
+
+  <script>
+    (function () {
+
+      const API = "https://script.google.com/macros/s/AKfycbxiGi8CsUmp1xhdzB2uzxRd3SLa5Yhd3RtBRYEDxmj7dwa5th80-vOiCJyJeW1SFzJU/exec";
+      const SHEET = "pameran-transisi";
+
+      const STORAGE_KEY = "visitor_logged";
+      const EXPIRE_MINUTES = 5;
+
+      const now = Date.now();
+      const lastVisit = localStorage.getItem(STORAGE_KEY);
+
+      function updateCount(total) {
+        document.getElementById("countText").innerText = total;
+      }
+
+      function getOnly() {
+        fetch(`${API}?mode=get&sheet=${SHEET}`)
+          .then(res => res.json())
+          .then(data => updateCount(data.total_pengunjung))
+          .catch(() => updateCount("!"));
+      }
+
+      function countVisitor() {
+
+        fetch("https://ipapi.co/json/")
+          .then(res => res.json())
+          .then(loc => {
+
+            return fetch(
+              `${API}?mode=count&sheet=${SHEET}` +
+              `&ip=${encodeURIComponent(loc.ip)}` +
+              `&country=${encodeURIComponent(loc.country_name)}` +
+              `&ua=${encodeURIComponent(navigator.userAgent)}`
+            );
+
+          })
+          .then(res => res.json())
+          .then(data => {
+
+            updateCount(data.total_pengunjung);
+            localStorage.setItem(STORAGE_KEY, now);
+
+          })
+          .catch(() => getOnly());
+
+      }
+
+      if (!lastVisit || (now - lastVisit) > EXPIRE_MINUTES * 60 * 1000) {
+        countVisitor();
+      } else {
+        getOnly();
+      }
+
+    })();
+  </script>
+
+  <!-- Launcher -->
+  <div id="launcher">
+
+    <h1>🌈 Belajar Seru dengan Quiz! 🌈</h1>
+    <h3>Yuk mulai petualangan belajar 🎮</h3>
+
+    <button id="startBtn">▶ Mulai Belajar</button>
+
+  </div>
+
+  <!-- App -->
+  <iframe id="appFrame" src="" allow="autoplay; clipboard-write"></iframe>
+
+  <script>
+
+    const startBtn = document.getElementById("startBtn");
+    const launcher = document.getElementById("launcher");
+    const iframe = document.getElementById("appFrame");
+
+    startBtn.addEventListener("click", () => {
+
+      iframe.src = "https://pelajar-pancasila-ceria.lovable.app/";
+
+      launcher.style.display = "none";
+      iframe.style.display = "block";
+
+    });
+
+  </script>
+
+</body>
+
+</html>
